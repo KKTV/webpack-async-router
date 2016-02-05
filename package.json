@@ -1,0 +1,22 @@
+{
+  "name": "webpack-entry-router",
+  "version": "0.0.0",
+  "description": "This router works with webpack, after proper webpack config, this would be a perfect solution to get dependencies on-demand by current visiting path",
+  "main": "entry.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "webpack",
+    "router"
+  ],
+  "author": "ddhp",
+  "license": "MIT",
+  "devDependencies": {
+    "express": "^4.13.4",
+    "jquery": "^2.2.0",
+    "moment": "^2.11.2",
+    "react": "^0.14.7",
+    "webpack": "^1.12.13"
+  }
+}
