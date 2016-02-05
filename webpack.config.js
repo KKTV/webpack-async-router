@@ -4,7 +4,7 @@ var webpack = require('webpack');
 // path to folders
 // remember to setup bootstrap path for component requiring style
 var dirs = {
-  src: './',
+  src: './sample-client',
   dest: './public/js',
 };
 
@@ -26,7 +26,7 @@ var plugins = [
    *
    */
   // new webpack.optimize.CommonsChunkPlugin({
-  //   async: 'async1',
+  //   async: 'async2',
   // }),
 
   new webpack.optimize.CommonsChunkPlugin({
