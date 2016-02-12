@@ -28,7 +28,7 @@ Your web app MUST be a server-side served app.
 For each static HTML page, remember to require "entry file" which "packed" by webpack with config of next step.
 
 ### Step 2 - Instantiate Router Inside entry.js
-entry.js is the entry point of all your server-side route, so you should instantiate router inside it. e.g:
+entry.js is the entry point to your controllers, so you should instantiate router inside it. e.g:
 ```js
 /**
  * listen to window.onload
