@@ -28,8 +28,10 @@ Your web app MUST be a server-side served app.
 For each static HTML page, remember to require "entry file" which "packed" by webpack with config of next step.
 
 ### Step 2 - Instantiate Router Inside entry.js
-entry.js is the entry point to your controllers, so you should instantiate router inside it. e.g:
+entry.js is the entry point to your controllers, so you should instantiate router inside it.
 ```js
+// /sample-client/entry.js
+
 /**
  * listen to window.onload
  * and instantiate router which would load correspond controller
@@ -58,7 +60,7 @@ window.onload = function onload() {
 
 config of Router:
 - `path` where router would look for controllers, relative to location of router.js, NOT entry.js
-- `pathMap` of  visiting path and controller name
+- `pathMap` of visiting path and controller name
 
 Remember `path` configuration is **relative to router.js** instead of entry.js.
 
@@ -119,7 +121,7 @@ var pathNeedReplace = ['sample-client/controllers'];
 ```
 
 ### Step 6 - Setup Webpack Commons Chunk
-I don't really what's working background, but lesson from result, you needs to use CommonsChunkPlugin *at least once*, i.e: 
+I don't really know what's working background, but lesson from result, you needs to use CommonsChunkPlugin *at least once*, i.e: 
 ```js
 // webpack.config.js
 var plugins = [
