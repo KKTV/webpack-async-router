@@ -3,7 +3,7 @@
 ## Overview
 This router works with webpack, after proper webpack config, this would be a perfect solution to get dependencies on-demand by current visiting path, e.g:
 
-While visiting `/`, which is home page of your web app, browser only loads `home` controller dependencies.  
+While visiting `/`, which is home page of your web app, browser only loads `home` controller dependencies (with mapping router path, see Setup information below).  
 On the other hand, when visiting `/signup`, browser will load `signup` controller dependencies asynchronously.  
 
 # Benefits
@@ -13,59 +13,101 @@ On the other hand, when visiting `/signup`, browser will load `signup` controlle
 # TODO
 - **by far it would pack all entry files of controllers into a single chunk**, if you know how to seperate them, please let me know.
 
-## HOW TO
+## See How It Works
 0. clone repo and cd to root path
 1. run `npm install`
 2. then `webpack`, this would pack client scripts
-3. run `node server/server.js`, which would run a sample server demostrate this router
-4. visit `http://localhost:3000` to see how router works
+3. run `node sample-server/server.js`, which would run a sample server demostrate this router
+4. go `http://localhost:3000` and visit `/`, `/signup` and `/detail` to see dependencies are load seperately!
 
-## Setup On Your Own Project
+## Setup With Your Own Project
 By following steps, you should be able to use this router on your web app.
 
-### Step 1 - Server Side Web App
-Your web app MUST be a server-side served app. For each static page route,   
-they can be any HTML like template you want, but remember to require entry file which
-"packed" by webpack with config of next step
+### Step 1 - Prerequisite
+Your web app MUST be a server-side served app. 
+For each static HTML page, remember to require "entry file" which "packed" by webpack with config of next step
 
-### Step 2 - Setup webpack output config
+### Step 2 - Setup Entry File Output Config
 Server-side HTML template requires same js script, which is your output entry file set in `webpack.config.js`.
-See `/server/index.html` and `webpack.config.js`.
-```
+See `/sample-server/index.html` and `webpack.config.js` for example.
+
+Setup webpack output config first:
+
+```js
 // webpack.config.js
-{
-  entry: path.join(__dirname, '/sample-client/entry.js'),
+
+// set dirs.src and dirs.dest of your project
+var dirs = {
+  src: './sample-client/', // src path of client scripts
+  dest: './public/js/', // dest path where browser would look up
+};
+
+// entry file is named entry.js
+module.exports = {
+  entry: path.join(__dirname, dirs.src, '/entry.js'),
+
   output: {
-    path: path.join(__dirname, '/public'),
-    publicPath: '/public/js/',
+    path: path.join(__dirname, dirs.dest), // absolute path to public folder
+    publicPath: dirs.dest, // relative public folder path where generated files would be, make browser able to load
     filename: 'entry.js',
-  }
+    chunkFilename: '[hash]-[id].js'
+  },
 }
+```
+then require this file in every html page:
+
+```html
+<!-- inside your html pages, in the end of <body> -->
+<script src="/your/path/to/entry/file/entry.js" type="text/javascript" charset="utf-8"></script>
+
 ```
 
 ### Step 3 - Instantiate Router Inside entry.js
-entry.js is the entry point of all your server-side route  
+entry.js is the entry point of all your server-side route, so you should instantiate router inside it.
 
-It would instantiate router with config, you can setup
+config of Router:
 - `path` where router would look for controllers
-- `pathMap` of current browser path and controller name
+- `pathMap` of  visiting path and controller name
 
 Please check `./sample-client/entry.js` to see detail. 
 
-### Step 4 - Setup Webpack Context Replacement
+### Step 4 - Controller Require Convention
+use `require([modules], callback)` to make async load working, i.e
+```js
+require(['jquery'], function($){
+  // $ is jquery
+});
+```
+I don't know why directly `var $ = require('jquery')` would pack chunks (jquery and controller) together.
+
+See `/sample-client/controllers/` for detail.
+
+### Step 5 - Setup Webpack Context Replacement
 b/c it's dynamic require, so you need to ask webpack to pack up specific path,  
 this is what [ContextReplacementPlugin](https://webpack.github.io/docs/list-of-plugins.html#contextreplacementplugin) does.  
 you can change `pathNeedReplace` variable inside webpack.config.js to satisfy your project.
+```js
+// setup path which needs to be replaced
+// to support dynamic require
+var pathNeedReplace = ['sample-client/controllers'];
+```
 
-### Step 4 - Setup Webpack Commons Chunk
-I don't really what's working background, but lesson from result, you needs to use CommonsChunkPlugin *at least once*, i.e: (see `plugins` variable inside webpack.config.js):
+### Step 6 - Setup Webpack Commons Chunk
+I don't really what's working background, but lesson from result, you needs to use CommonsChunkPlugin *at least once*, i.e: 
+```js
+// webpack.config.js
+var plugins = [
+  // ... other plugins
+
+  new webpack.optimize.CommonsChunkPlugin({
+    async: true,
+  }),
+
+  // ... other plugins
+];
 ```
-new webpack.optimize.CommonsChunkPlugin({
-  async: true,
-})
-```
-but if you see there are duplicate chunks used inside your generated assets(see report of webpack), e.g:
-```
+If you see duplicate chunks used inside your generated assets(see report of webpack), e.g:
+```js
 Asset     Size  Chunks             Chunk Names
 entry.js   5.9 kB       0  [emitted]  main
 8d59163b0ff94f8f3dd9-1.js  2.84 kB       1  [emitted]  
@@ -73,19 +115,26 @@ entry.js   5.9 kB       0  [emitted]  main
 8d59163b0ff94f8f3dd9-3.js   123 kB       3  [emitted]  
 8d59163b0ff94f8f3dd9-4.js   267 kB       4  [emitted]  
 ```
-As you see `Asset 8d59163b0ff94f8f3dd9-2.js` has Chunk 2 and 3. In this curcumstances, you need to add another CommonsChunkPlugin and set minChunks to 2 for the last CommonsChunkPlugin, i.e:
-```
-new webpack.optimize.CommonsChunkPlugin({
-  async: 'async1',
-}),
+As you see `Asset 8d59163b0ff94f8f3dd9-2.js` has Chunk 2 and 3 and `8d59163b0ff94f8f3dd9-3.js` has Chunk 3 as well.  
+In this curcumstances, you need to add another CommonsChunkPlugin and set **minChunks to 2** for the last CommonsChunkPlugin, i.e:
+```js
+// webpack.config.js
+var plugins = [
+  // ... other plugins
 
-new webpack.optimize.CommonsChunkPlugin({
-  // minChunks: 2, // if a module used twice, move to a common chunk
-  async: true,
-}),
+  new webpack.optimize.CommonsChunkPlugin({
+    async: 'async1',
+  }),
+
+  new webpack.optimize.CommonsChunkPlugin({
+    // minChunks: 2, // if a module used twice, move to a common chunk
+    async: true,
+  }),
+
+  // ... other plugins
+];
 ```
 if you see another duplicated chunks, then add another one with async: 'async2'... and so on.
 
 ### It's Done
 Run `webpack --display-chunks` to see your pack result.
-And visit `/`, `/signup` and `/detail` to see dependencies are load seperately!
