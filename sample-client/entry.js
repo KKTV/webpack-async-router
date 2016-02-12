@@ -6,7 +6,7 @@
  */
 var routerConfig = {
   // relative path from router to source files where would be required
-  path: './controllers', 
+  path: './sample-client/controllers', 
   // assume client is visiting '/my-page'
   // router would get './' + this.path + '/my-page.js' by default
   // set custom map here

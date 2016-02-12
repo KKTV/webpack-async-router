@@ -2,20 +2,20 @@ var path = require('path');
 var webpack = require('webpack');
 
 // path to folders
-// remember to setup bootstrap path for component requiring style
 var dirs = {
-  src: './sample-client',
-  dest: './public/js',
+  src: './sample-client/', // src path of client scripts
+  dest: './public/js/', // dest path where browser would look up
 };
 
 // setup path which needs to be replaced
 // to support dynamic require
-var pathNeedReplace = ['controllers'];
+var pathNeedReplace = ['sample-client/controllers'];
 var replacementReg = new RegExp('.\/(' + pathNeedReplace.join('|') + ')\/.*\.js$');
 
 var plugins = [
   // replace dynamic context
   new webpack.ContextReplacementPlugin(/\.\/?/, replacementReg),
+
   new webpack.optimize.CommonsChunkPlugin({
     async: 'async1',
   }),
@@ -47,8 +47,8 @@ module.exports = {
   entry: path.join(__dirname, dirs.src, '/entry.js'),
 
   output: {
-    path: path.join(__dirname, dirs.dest),
-    publicPath: '/public/js/', // relative public folder path where generated files would be, make browser able to load
+    path: path.join(__dirname, dirs.dest), // absolute path to public folder
+    publicPath: dirs.dest, // relative public folder path where generated files would be, make browser able to load
     filename: 'entry.js',
     chunkFilename: '[hash]-[id].js'
   },
