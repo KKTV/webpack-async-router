@@ -25,7 +25,7 @@ By following steps, you should be able to use this router on your web app.
 
 ### Step 1 - Prerequisite
 Your web app MUST be a server-side served app. 
-For each static HTML page, remember to require "entry file" which "packed" by webpack with config of next step.
+For each static HTML page, remember to require "entry file" which "packed" by webpack.
 
 ### Step 2 - Instantiate Router Inside entry.js
 entry.js is the entry point to your controllers, so you should instantiate router inside it.
