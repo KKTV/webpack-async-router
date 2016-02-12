@@ -155,7 +155,7 @@ var plugins = [
   }),
 
   new webpack.optimize.CommonsChunkPlugin({
-    // minChunks: 2, // if a module used twice, move to a common chunk
+    minChunks: 2, // if a module used twice, move to a common chunk
     async: true,
   }),
 
