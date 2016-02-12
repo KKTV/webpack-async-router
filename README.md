@@ -6,11 +6,11 @@ This router works with webpack, after proper webpack config, this would be a per
 While visiting `/`, which is home page of your web app, browser only loads `home` controller dependencies (with mapping router path, see Setup information below).  
 On the other hand, when visiting `/signup`, browser will load `signup` controller dependencies asynchronously.  
 
-# Benefits
+## Benefits
 - Reduce initial loading time.
 - Avoid redundant loading cost. (b/c we pack file individually)
 
-# TODO
+## TODO
 - **by far it would pack all entry files of controllers into a single chunk**, if you know how to seperate them, please let me know.
 
 ## See How It Works
@@ -25,9 +25,44 @@ By following steps, you should be able to use this router on your web app.
 
 ### Step 1 - Prerequisite
 Your web app MUST be a server-side served app. 
-For each static HTML page, remember to require "entry file" which "packed" by webpack with config of next step
+For each static HTML page, remember to require "entry file" which "packed" by webpack with config of next step.
 
-### Step 2 - Setup Entry File Output Config
+### Step 2 - Instantiate Router Inside entry.js
+entry.js is the entry point of all your server-side route, so you should instantiate router inside it. e.g:
+```js
+/**
+ * listen to window.onload
+ * and instantiate router which would load correspond controller
+ * inside specified `path` 
+ *
+ */
+var routerConfig = {
+  // relative path from router to source files where would be required
+  path: './sample-client/controllers', 
+  // assume client is visiting '/my-page'
+  // router would get './' + this.path + '/my-page.js' by default
+  // set custom map here
+  pathMap: {
+    '/': '/home'
+  }
+};
+
+// specifically require router module
+// for dynamic require setup in Router#visit method
+var Router = require('../router'); 
+window.onload = function onload() {
+  var router = new Router(routerConfig);
+  router.visit();
+};
+```
+
+config of Router:
+- `path` where router would look for controllers, relative to location of router.js, NOT entry.js
+- `pathMap` of  visiting path and controller name
+
+Remember `path` configuration is **relative to router.js** instead of entry.js.
+
+### Step 3 - Config Webpack Entry File Output
 Server-side HTML template requires same js script, which is your output entry file set in `webpack.config.js`.
 See `/sample-server/index.html` and `webpack.config.js` for example.
 
@@ -61,15 +96,6 @@ then require this file in every html page:
 <script src="/your/path/to/entry/file/entry.js" type="text/javascript" charset="utf-8"></script>
 
 ```
-
-### Step 3 - Instantiate Router Inside entry.js
-entry.js is the entry point of all your server-side route, so you should instantiate router inside it.
-
-config of Router:
-- `path` where router would look for controllers
-- `pathMap` of  visiting path and controller name
-
-Please check `./sample-client/entry.js` to see detail. 
 
 ### Step 4 - Controller Require Convention
 use `require([modules], callback)` to make async load working, i.e
