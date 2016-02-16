@@ -6,7 +6,7 @@
  */
 var routerConfig = {
   // relative path from router to source files where would be required
-  path: 'sample-client/controllers', 
+  path: 'controllers', 
   // assume client is visiting '/my-page'
   // router would get './' + this.path + '/my-page.js' by default
   // set custom map here
@@ -17,7 +17,7 @@ var routerConfig = {
 
 // specifically require router module
 // for dynamic require setup in Router#visit method
-var Router = require('../router'); 
+var Router = require('./router/router'); 
 window.onload = function onload() {
   var router = new Router(routerConfig);
   router.visit();
