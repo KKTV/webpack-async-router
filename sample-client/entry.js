@@ -5,7 +5,7 @@
  *
  */
 var routerConfig = {
-  // relative path from router to source files where would be required
+  // relative path from PARENT of router file's path to source files where would be required
   path: 'controllers', 
   // assume client is visiting '/my-page'
   // router would get './' + this.path + '/my-page.js' by default
@@ -15,10 +15,10 @@ var routerConfig = {
   }
 };
 
-// specifically require router module
-// for dynamic require setup in Router#visit method
+// require router.js, depends on your project structure
 var Router = require('./router/router'); 
 window.onload = function onload() {
   var router = new Router(routerConfig);
+  // dynamic require is setup in Router#visit method
   router.visit();
 };
