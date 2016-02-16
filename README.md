@@ -5,6 +5,7 @@ This router works with webpack, after proper webpack config, this would be a per
 
 While visiting `/`, which is home page of your web app, browser only loads `home` controller dependencies (with mapping router path, see Setup information below).  
 On the other hand, when visiting `/signup`, browser will load `signup` controller dependencies asynchronously.  
+If it's `/my-route` taking place, router would get `myRoute`(camelized) controller.
 
 ## Benefits
 - Reduce initial loading time.
