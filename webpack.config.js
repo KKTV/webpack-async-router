@@ -10,7 +10,7 @@ var dirs = {
 // setup path which needs to be replaced
 // to support dynamic require
 var contextPaths = ['controllers'];
-var replacementReg = new RegExp('.\/(' + contextPaths.join('|') + ')\/.*\.js$');
+var replacementReg = new RegExp('\.\/(' + contextPaths.join('|') + ')\/.*\.js$');
 
 var plugins = [
   // replace dynamic context
