@@ -1,3 +1,5 @@
+var camelize = require('camelize');
+
 /**
  * instantiate a Router
  * invoke Router#visit to execute corespondant controller
@@ -8,8 +10,11 @@
 // prefixed with '/'
 function getCurrentPath() {
   var current = window.location.pathname.split('/');
+
   if (current.length > 1) {
     current = current[1];
+    current = camelize(current);
+
     return '/' + current;
   } else {
     return '/';
