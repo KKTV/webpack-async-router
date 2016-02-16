@@ -176,3 +176,6 @@ if you see another duplicated chunks, then add another one with async: 'async2'.
 
 ### It's Done
 Run `webpack --display-chunks` to see your pack result.
+
+## License
+MIT
