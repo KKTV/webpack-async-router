@@ -52,8 +52,8 @@ Router.prototype.visit = function get(name) {
   }
   var self = this;
   require.ensure([], function (require) {
-    console.log(self.path + name + '.js');
+    console.log('../' + self.path + name + '.js');
     // this will execute controller
-    require(self.path + name + '.js');
+    require('../' + self.path + name + '.js');
   });
 };
