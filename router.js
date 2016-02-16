@@ -13,8 +13,6 @@ function getCurrentPath() {
 
   if (current.length > 1) {
     current = current[1];
-    current = camelize(current);
-
     return '/' + current;
   } else {
     return '/';
@@ -54,6 +52,7 @@ Router.prototype.visit = function get(name) {
   if (!name) {
     var nameFromPathMap = this.pathMap[getCurrentPath()];
     name = nameFromPathMap ? nameFromPathMap : getCurrentPath();
+    name = camelize(name); // camelize target controller file name 
   }
   var self = this;
   require.ensure([], function (require) {
