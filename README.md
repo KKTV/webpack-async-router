@@ -22,6 +22,7 @@ On the other hand, when visiting `/signup`, browser will load `signup` controlle
 
 ## Setup With Your Own Project
 By following steps, you should be able to use this router on your web app.
+You can check `sample-client/` to see suggested structure of your client.
 
 ### Step 1 - Prerequisite
 Your web app MUST be a server-side served app. 
