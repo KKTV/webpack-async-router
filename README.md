@@ -1,11 +1,11 @@
-# webpack-entry-router
+# webpack-async-router
 
 ## Overview
 This router works with webpack, after proper webpack config, this would be a perfect solution to get dependencies on-demand by current visiting path, e.g:
 
-While visiting `/`, which is home page of your web app, browser only loads `home` controller dependencies (with mapping router path, see Setup information below).  
-On the other hand, when visiting `/signup`, browser will load `signup` controller dependencies asynchronously.  
-If it's `/my-route` taking place, router would get `myRoute`(camelized) controller.
+While visiting `/`, which is home page of your web app, browser only loads `home.js` controller dependencies (with mapping router path, see Setup information below).  
+On the other hand, when visiting `/signup`, browser will load `signup.js` controller dependencies asynchronously.  
+If it's `/my-route` taking place, router would get `myRoute.js`(camelized) controller dependencies.
 
 ## Benefits
 - Reduce initial loading time.
@@ -44,7 +44,7 @@ var routerConfig = {
   // relative path from PARENT of router file's path to source files where would be required
   path: 'controllers', 
   // assume client is visiting '/my-page'
-  // router would get './' + this.path + '/my-page.js' by default
+  // router would get '../' + this.path + '/my-page.js' by default
   // set custom map here
   pathMap: {
     '/': '/home'
@@ -113,8 +113,8 @@ I don't know why directly `var $ = require('jquery')` would pack chunks (jquery 
 See `/sample-client/controllers/` for detail.
 
 ### Step 5 - Setup Webpack Context Replacement
-b/c it's dynamic require, so you need to ask webpack to pack up specific path,  
-this is what [ContextReplacementPlugin](https://webpack.github.io/docs/list-of-plugins.html#contextreplacementplugin) does.  
+[ContextReplacementPlugin](https://webpack.github.io/docs/list-of-plugins.html#contextreplacementplugin) replaces webpack context and pack files which matches set regExp.
+it's mandatory for dynamic require.  
 you can change `contextPaths` variable inside webpack.config.js to satisfy your project, it should be the same with what you set to `routerConfig.path`.
 
 ```js
