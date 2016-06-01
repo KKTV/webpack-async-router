@@ -48,7 +48,8 @@ var routerConfig = {
   // set custom map here
   pathMap: {
     '/': '/home'
-  }
+  },
+  ctrlEntry: '' // default to be `index`, change to what u want if needed
 };
 
 // require router.js, depends on your project structure

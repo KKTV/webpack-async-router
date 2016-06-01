@@ -1,3 +1,5 @@
+var camelize = require('camelize');
+
 /**
  * instantiate a Router
  * invoke Router#visit to execute corespondant controller
@@ -20,11 +22,13 @@ function getCurrentPath() {
  * @param config {Object} - config object, possible keys:
  *  - path: location of controllers relative to Router
  *  - map: object with key as path and value as controller name
+ *  - ctrlEntry: name which router would load to the folder, is `index` by default
  *
  */
 function Router(config) {
   this.path = config.path || './';
   this.pathMap = config.pathMap || {};
+  this.ctrlEntry = config.ctrlEntry || 'index';
 }
 
 module.exports = Router;
@@ -49,11 +53,12 @@ Router.prototype.visit = function get(name) {
   if (!name) {
     var nameFromPathMap = this.pathMap[getCurrentPath()];
     name = nameFromPathMap ? nameFromPathMap : getCurrentPath();
+    name = camelize(name); // camelize target controller file name 
   }
   var self = this;
   require.ensure([], function (require) {
-    console.log('../' + self.path + name + '.js');
+    console.log('../' + self.path + name + '/' + self.ctrlEntry + '.js');
     // this will execute controller
-    require('../' + self.path + name + '.js');
+    require('../' + self.path + name + '/' + self.ctrlEntry + '.js');
   });
 };

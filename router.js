@@ -10,7 +10,6 @@ var camelize = require('camelize');
 // prefixed with '/'
 function getCurrentPath() {
   var current = window.location.pathname.split('/');
-
   if (current.length > 1) {
     current = current[1];
     return '/' + current;
@@ -23,11 +22,13 @@ function getCurrentPath() {
  * @param config {Object} - config object, possible keys:
  *  - path: location of controllers relative to Router
  *  - map: object with key as path and value as controller name
+ *  - ctrlEntry: name which router would load to the folder, is `index` by default
  *
  */
 function Router(config) {
   this.path = config.path || './';
   this.pathMap = config.pathMap || {};
+  this.ctrlEntry = config.ctrlEntry || 'index';
 }
 
 module.exports = Router;
@@ -56,8 +57,8 @@ Router.prototype.visit = function get(name) {
   }
   var self = this;
   require.ensure([], function (require) {
-    console.log('../' + self.path + name + '.js');
+    console.log('../' + self.path + name + '/' + self.ctrlEntry + '.js');
     // this will execute controller
-    require('../' + self.path + name + '.js');
+    require('../' + self.path + name + '/' + self.ctrlEntry + '.js');
   });
 };
